@@ -15,6 +15,7 @@ import com.zzlogviewer.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     companion object {
+        private const val PREFS_NAME = "ZZLogViewerPrefs"
         private const val KEY_SHOW_LINE_NUMBERS = "show_line_numbers"
         private const val KEY_TEXT_SIZE = "text_size"
         private const val DEFAULT_TEXT_SIZE = 18f
@@ -45,9 +46,14 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        // Restore state
-        showLineNumbers = savedInstanceState?.getBoolean(KEY_SHOW_LINE_NUMBERS, true) ?: true
-        textSize = savedInstanceState?.getFloat(KEY_TEXT_SIZE, DEFAULT_TEXT_SIZE) ?: DEFAULT_TEXT_SIZE
+        // SharedPreferences에서 설정 로드
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
+        // Restore state (화면 회전 시 savedInstanceState 우선, 없으면 SharedPreferences)
+        showLineNumbers = savedInstanceState?.getBoolean(KEY_SHOW_LINE_NUMBERS)
+            ?: prefs.getBoolean(KEY_SHOW_LINE_NUMBERS, true)
+        textSize = savedInstanceState?.getFloat(KEY_TEXT_SIZE)
+            ?: prefs.getFloat(KEY_TEXT_SIZE, DEFAULT_TEXT_SIZE)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -145,6 +151,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleMenuItemClick(item: MenuItem): Boolean {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
         return when (item.itemId) {
             R.id.action_browse_file -> {
                 openFilePicker()
@@ -159,6 +167,9 @@ class MainActivity : AppCompatActivity() {
                 // Adapter에 변경 사항 반영
                 logAdapter.showLineNumbers = showLineNumbers
 
+                // SharedPreferences에 저장
+                prefs.edit().putBoolean(KEY_SHOW_LINE_NUMBERS, showLineNumbers).apply()
+
                 true
             }
             R.id.action_text_size_increase -> {
@@ -166,6 +177,9 @@ class MainActivity : AppCompatActivity() {
                 if (textSize < MAX_TEXT_SIZE) {
                     textSize += TEXT_SIZE_STEP
                     logAdapter.textSize = textSize
+
+                    // SharedPreferences에 저장
+                    prefs.edit().putFloat(KEY_TEXT_SIZE, textSize).apply()
                 }
                 true
             }
@@ -174,6 +188,9 @@ class MainActivity : AppCompatActivity() {
                 if (textSize > MIN_TEXT_SIZE) {
                     textSize -= TEXT_SIZE_STEP
                     logAdapter.textSize = textSize
+
+                    // SharedPreferences에 저장
+                    prefs.edit().putFloat(KEY_TEXT_SIZE, textSize).apply()
                 }
                 true
             }
