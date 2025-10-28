@@ -131,6 +131,13 @@ class MainActivity : AppCompatActivity() {
 
             // 빈 상태 숨기고 RecyclerView 표시
             showEmptyState(false)
+
+            // 마지막 라인으로 스크롤 (레이아웃 완료 후 실행)
+            if (logLines.isNotEmpty()) {
+                binding.recyclerView.post {
+                    binding.recyclerView.scrollToPosition(logLines.size - 1)
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             logAdapter.updateData(listOf("Error loading log file: ${e.message}"))
