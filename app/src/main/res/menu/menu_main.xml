@@ -6,6 +6,9 @@
         <item
             android:id="@+id/action_browse_file"
             android:title="@string/browse_file" />
+        <item
+            android:id="@+id/action_search"
+            android:title="@string/search" />
     </group>
 
     <!-- View Options -->

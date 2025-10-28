@@ -47,6 +47,76 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- 검색바 -->
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:id="@+id/searchPrevButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_arrow_up"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/search_previous"
+            android:layout_marginStart="4dp"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
+            android:id="@+id/searchNextButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_arrow_down"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/search_next"
+            android:layout_marginStart="4dp"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/searchCounterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="12sp"
+            android:textColor="?attr/colorOnSurface"
+            android:text="0/0" />
+
+        <ImageButton
+            android:id="@+id/searchCloseButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_close"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/search_close"
+            app:tint="?attr/colorOnSurface" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/emptyStateText"
         android:layout_width="wrap_content"
@@ -80,7 +150,7 @@
         android:scrollbars="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         tools:listitem="@layout/log_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

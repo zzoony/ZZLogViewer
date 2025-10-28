@@ -9,4 +9,9 @@
     <string name="browse_file">Browse File</string>
     <string name="text_size_increase">Text Size +</string>
     <string name="text_size_decrease">Text Size -</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search in log…</string>
+    <string name="search_previous">Previous</string>
+    <string name="search_next">Next</string>
+    <string name="search_close">Close search</string>
 </resources>
