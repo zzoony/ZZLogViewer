@@ -4,12 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#FF1F1F1F</color>
     <color name="primary_dark">#FF000000</color>
-    <color name="accent">#FF4CAF50</color>
+    <color name="accent">#FFCC6600</color>
     <color name="line_number_text">#FF999999</color>
     <color name="log_text">#FFE0E0E0</color>
     <color name="divider">#FF444444</color>
     <color name="background">#FF121212</color>
     <color name="surface">#FF1E1E1E</color>
-    <color name="button_background">#FF4CAF50</color>
-    <color name="button_text">#FF000000</color>
+    <color name="button_background">#FFCC6600</color>
+    <color name="button_text">#FFFFFFFF</color>
 </resources>
