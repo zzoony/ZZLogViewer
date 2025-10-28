@@ -1,0 +1,30 @@
+2024-10-28 13:14:25.123 INFO  Application started
+2024-10-28 13:14:25.456 DEBUG Initializing components...
+2024-10-28 13:14:25.789 INFO  Database connection established
+2024-10-28 13:14:26.012 DEBUG Loading configuration from /config/app.properties
+2024-10-28 13:14:26.345 WARN  Configuration file missing, using defaults
+2024-10-28 13:14:26.678 INFO  Starting network service on port 8080
+2024-10-28 13:14:27.001 DEBUG Registering event listeners
+2024-10-28 13:14:27.234 INFO  User authentication module loaded
+2024-10-28 13:14:27.567 DEBUG Cache initialized with 1000 entries
+2024-10-28 13:14:27.890 INFO  Background worker threads started (count: 4)
+2024-10-28 13:14:28.123 WARN  Low memory detected: 512MB available
+2024-10-28 13:14:28.456 ERROR Failed to connect to external API: timeout
+2024-10-28 13:14:28.789 DEBUG Retrying connection (attempt 1/3)
+2024-10-28 13:14:29.012 DEBUG Retrying connection (attempt 2/3)
+2024-10-28 13:14:29.345 INFO  Connection successful
+2024-10-28 13:14:29.678 DEBUG Processing queue: 42 items pending
+2024-10-28 13:14:30.001 INFO  First batch processed: 10 items
+2024-10-28 13:14:30.234 WARN  Rate limit approaching: 95% of quota used
+2024-10-28 13:14:30.567 ERROR Validation failed for request ID 12345
+2024-10-28 13:14:30.890 DEBUG Stack trace: NullPointerException at line 42
+2024-10-28 13:14:31.123 INFO  Automatic recovery initiated
+2024-10-28 13:14:31.456 DEBUG Clearing corrupted cache entries
+2024-10-28 13:14:31.789 INFO  Recovery completed successfully
+2024-10-28 13:14:32.012 DEBUG Monitoring system health...
+2024-10-28 13:14:32.345 INFO  CPU usage: 45%, Memory usage: 62%
+2024-10-28 13:14:32.678 WARN  Disk space running low: 15% remaining
+2024-10-28 13:14:33.001 INFO  Scheduled maintenance task executed
+2024-10-28 13:14:33.234 DEBUG Cleaning up temporary files
+2024-10-28 13:14:33.567 INFO  Application running normally
+2024-10-28 13:14:33.890 DEBUG Heartbeat sent to monitoring service

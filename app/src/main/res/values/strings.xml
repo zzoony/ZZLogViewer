@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZZLogViewer</string>
+    <string name="app_title_with_version">ZZLogViewer v0.0.1</string>
+    <string name="show_line_numbers">Show Line Numbers</string>
+    <string name="menu_description">Menu</string>
+</resources>
