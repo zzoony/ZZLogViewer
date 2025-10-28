@@ -1,8 +1,12 @@
 package com.zzlogviewer
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.PopupMenu
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zzlogviewer.databinding.ActivityMainBinding
@@ -16,6 +20,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var logAdapter: LogAdapter
     private var showLineNumbers = true
+
+    // 파일 선택 런처
+    private val filePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.data?.let { uri ->
+                loadLogFile(uri)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,17 +53,22 @@ class MainActivity : AppCompatActivity() {
             showPopupMenu()
         }
 
-        // 로그 파일 읽기
-        val logLines = readLogFile()
+        // 파일 브라우징 버튼 클릭 리스너 설정
+        binding.browseFileButton.setOnClickListener {
+            openFilePicker()
+        }
 
-        // RecyclerView 설정
-        logAdapter = LogAdapter(logLines).apply {
+        // RecyclerView 설정 (초기에는 빈 리스트)
+        logAdapter = LogAdapter(emptyList()).apply {
             this.showLineNumbers = this@MainActivity.showLineNumbers
         }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = logAdapter
         }
+
+        // 초기 상태: 파일 선택 버튼 표시, RecyclerView 숨김
+        showEmptyState(true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -72,19 +92,51 @@ class MainActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    private fun readLogFile(): List<String> {
-        return try {
-            assets.open("sample.txt").bufferedReader().use { reader ->
+    private fun openFilePicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("text/plain", "text/*"))
+        }
+        filePickerLauncher.launch(intent)
+    }
+
+    private fun loadLogFile(uri: Uri) {
+        try {
+            val logLines = contentResolver.openInputStream(uri)?.bufferedReader()?.use { reader ->
                 reader.readLines()
-            }
+            } ?: emptyList()
+
+            // RecyclerView에 로그 표시
+            logAdapter.updateData(logLines)
+
+            // 빈 상태 숨기고 RecyclerView 표시
+            showEmptyState(false)
         } catch (e: Exception) {
             e.printStackTrace()
-            listOf("Error loading log file: ${e.message}")
+            logAdapter.updateData(listOf("Error loading log file: ${e.message}"))
+            showEmptyState(false)
+        }
+    }
+
+    private fun showEmptyState(show: Boolean) {
+        if (show) {
+            binding.emptyStateText.visibility = View.VISIBLE
+            binding.browseFileButton.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+        } else {
+            binding.emptyStateText.visibility = View.GONE
+            binding.browseFileButton.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 
     private fun handleMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_browse_file -> {
+                openFilePicker()
+                true
+            }
             R.id.action_toggle_line_numbers -> {
                 // 토글 상태 변경
                 showLineNumbers = !showLineNumbers

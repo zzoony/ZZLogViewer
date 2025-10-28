@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class LogAdapter(private val logLines: List<String>) :
+class LogAdapter(private var logLines: List<String>) :
     RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
 
     var showLineNumbers: Boolean = true
@@ -14,6 +14,11 @@ class LogAdapter(private val logLines: List<String>) :
             field = value
             notifyDataSetChanged()
         }
+
+    fun updateData(newLines: List<String>) {
+        logLines = newLines
+        notifyDataSetChanged()
+    }
 
     inner class LogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val lineNumberTextView: TextView = itemView.findViewById(R.id.lineNumberTextView)

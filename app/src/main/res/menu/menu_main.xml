@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/action_toggle_line_numbers"
-        android:title="@string/show_line_numbers"
-        android:checkable="true"
-        android:checked="true" />
+    <!-- File Operations -->
+    <group android:id="@+id/group_file_operations">
+        <item
+            android:id="@+id/action_browse_file"
+            android:title="@string/browse_file" />
+    </group>
+
+    <!-- View Options -->
+    <group android:id="@+id/group_view_options">
+        <item
+            android:id="@+id/action_toggle_line_numbers"
+            android:title="@string/show_line_numbers"
+            android:checkable="true"
+            android:checked="true" />
+    </group>
 
 </menu>
