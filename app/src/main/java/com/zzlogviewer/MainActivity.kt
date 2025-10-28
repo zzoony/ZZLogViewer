@@ -3,8 +3,11 @@ package com.zzlogviewer
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +31,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var logAdapter: LogAdapter
     private var showLineNumbers = true
     private var textSize = DEFAULT_TEXT_SIZE
+
+    // 검색 관련 변수
+    private var searchQuery: String = ""
+    private var searchResults: List<Int> = emptyList() // 검색 결과 라인 인덱스
+    private var currentSearchIndex: Int = -1 // 현재 선택된 검색 결과 인덱스
 
     // 파일 선택 런처
     private val filePickerLauncher = registerForActivityResult(
@@ -87,6 +95,9 @@ class MainActivity : AppCompatActivity() {
 
         // 초기 상태: 파일 선택 버튼 표시, RecyclerView 숨김
         showEmptyState(true)
+
+        // 검색바 설정
+        setupSearchBar()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -165,6 +176,10 @@ class MainActivity : AppCompatActivity() {
                 openFilePicker()
                 true
             }
+            R.id.action_search -> {
+                toggleSearchBar()
+                true
+            }
             R.id.action_toggle_line_numbers -> {
                 // 토글 상태 변경
                 showLineNumbers = !showLineNumbers
@@ -203,5 +218,137 @@ class MainActivity : AppCompatActivity() {
             }
             else -> false
         }
+    }
+
+    private fun setupSearchBar() {
+        // 검색어 입력 리스너
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s?.toString() ?: ""
+                performSearch()
+            }
+        })
+
+        // 이전 버튼
+        binding.searchPrevButton.setOnClickListener {
+            navigateToPreviousResult()
+        }
+
+        // 다음 버튼
+        binding.searchNextButton.setOnClickListener {
+            navigateToNextResult()
+        }
+
+        // 닫기 버튼
+        binding.searchCloseButton.setOnClickListener {
+            hideSearchBar()
+        }
+    }
+
+    private fun toggleSearchBar() {
+        if (binding.searchBar.visibility == View.VISIBLE) {
+            hideSearchBar()
+        } else {
+            showSearchBar()
+        }
+    }
+
+    private fun showSearchBar() {
+        binding.searchBar.visibility = View.VISIBLE
+        binding.searchEditText.requestFocus()
+
+        // 키보드 표시
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun hideSearchBar() {
+        binding.searchBar.visibility = View.GONE
+        binding.searchEditText.text.clear()
+        searchQuery = ""
+        searchResults = emptyList()
+        currentSearchIndex = -1
+
+        // 키보드 숨김
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+
+        // 검색 하이라이트 제거
+        logAdapter.setSearchHighlight("", -1)
+    }
+
+    private fun performSearch() {
+        if (searchQuery.isEmpty()) {
+            searchResults = emptyList()
+            currentSearchIndex = -1
+            updateSearchCounter()
+            logAdapter.setSearchHighlight("", -1)
+            return
+        }
+
+        // 대소문자 무시하고 검색
+        val logLines = logAdapter.getLogLines()
+        searchResults = logLines.indices.filter { index ->
+            logLines[index].contains(searchQuery, ignoreCase = true)
+        }
+
+        // 첫 번째 결과로 이동
+        if (searchResults.isNotEmpty()) {
+            currentSearchIndex = 0
+            scrollToCurrentResult()
+        } else {
+            currentSearchIndex = -1
+        }
+
+        updateSearchCounter()
+    }
+
+    private fun navigateToPreviousResult() {
+        if (searchResults.isEmpty()) return
+
+        currentSearchIndex = if (currentSearchIndex > 0) {
+            currentSearchIndex - 1
+        } else {
+            searchResults.size - 1 // 마지막으로 이동
+        }
+
+        scrollToCurrentResult()
+        updateSearchCounter()
+    }
+
+    private fun navigateToNextResult() {
+        if (searchResults.isEmpty()) return
+
+        currentSearchIndex = if (currentSearchIndex < searchResults.size - 1) {
+            currentSearchIndex + 1
+        } else {
+            0 // 처음으로 이동
+        }
+
+        scrollToCurrentResult()
+        updateSearchCounter()
+    }
+
+    private fun scrollToCurrentResult() {
+        if (currentSearchIndex < 0 || currentSearchIndex >= searchResults.size) return
+
+        val lineIndex = searchResults[currentSearchIndex]
+
+        // RecyclerView를 해당 위치로 스크롤
+        binding.recyclerView.scrollToPosition(lineIndex)
+
+        // LogAdapter에 현재 검색 결과 위치 전달
+        logAdapter.setSearchHighlight(searchQuery, lineIndex)
+    }
+
+    private fun updateSearchCounter() {
+        val counterText = if (searchResults.isEmpty()) {
+            "0/0"
+        } else {
+            "${currentSearchIndex + 1}/${searchResults.size}"
+        }
+        binding.searchCounterText.text = counterText
     }
 }

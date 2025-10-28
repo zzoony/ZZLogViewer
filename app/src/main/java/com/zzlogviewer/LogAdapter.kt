@@ -1,6 +1,7 @@
 package com.zzlogviewer
 
 import android.text.SpannableString
+import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.Spanned
 import android.view.LayoutInflater
@@ -25,6 +26,18 @@ class LogAdapter(private var logLines: List<String>) :
             notifyDataSetChanged()
         }
 
+    // 검색 관련 변수
+    private var searchQuery: String = ""
+    private var currentSearchLineIndex: Int = -1
+
+    fun getLogLines(): List<String> = logLines
+
+    fun setSearchHighlight(query: String, lineIndex: Int) {
+        searchQuery = query
+        currentSearchLineIndex = lineIndex
+        notifyDataSetChanged()
+    }
+
     fun updateData(newLines: List<String>) {
         logLines = newLines
         notifyDataSetChanged()
@@ -48,8 +61,8 @@ class LogAdapter(private var logLines: List<String>) :
 
         holder.lineNumberTextView.text = lineNumber.toString()
 
-        // 색상 하이라이팅 적용
-        holder.logTextView.text = colorizeLogLine(logLine, holder.itemView)
+        // 색상 하이라이팅 적용 (로그 패턴 + 검색 하이라이트)
+        holder.logTextView.text = colorizeLogLine(logLine, position, holder.itemView)
 
         // 텍스트 크기 적용
         holder.lineNumberTextView.textSize = textSize
@@ -65,11 +78,38 @@ class LogAdapter(private var logLines: List<String>) :
         }
     }
 
-    private fun colorizeLogLine(line: String, view: View): SpannableString {
+    private fun colorizeLogLine(line: String, position: Int, view: View): SpannableString {
         val spannable = SpannableString(line)
         val context = view.context
 
-        // 1. 타임스탬프 패턴: [날짜 시간]
+        // 1. 검색 하이라이팅 (가장 먼저 적용)
+        if (searchQuery.isNotEmpty()) {
+            var startIndex = 0
+            while (startIndex < line.length) {
+                val foundIndex = line.indexOf(searchQuery, startIndex, ignoreCase = true)
+                if (foundIndex == -1) break
+
+                val endIndex = foundIndex + searchQuery.length
+
+                // 현재 라인이 선택된 검색 결과인지 확인
+                val color = if (position == currentSearchLineIndex) {
+                    ContextCompat.getColor(context, R.color.search_current)
+                } else {
+                    ContextCompat.getColor(context, R.color.search_highlight)
+                }
+
+                spannable.setSpan(
+                    BackgroundColorSpan(color),
+                    foundIndex,
+                    endIndex,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                startIndex = endIndex
+            }
+        }
+
+        // 2. 타임스탬프 패턴: [날짜 시간]
         val timestampRegex = Regex("""\[\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}:\d{2}\]""")
         timestampRegex.findAll(line).forEach { match ->
             spannable.setSpan(
@@ -80,7 +120,7 @@ class LogAdapter(private var logLines: List<String>) :
             )
         }
 
-        // 2. 구분선 패턴: ===...
+        // 3. 구분선 패턴: ===...
         val separatorRegex = Regex("""={3,}""")
         separatorRegex.findAll(line).forEach { match ->
             spannable.setSpan(
@@ -91,7 +131,7 @@ class LogAdapter(private var logLines: List<String>) :
             )
         }
 
-        // 3. 화살표 패턴: -->, ->>
+        // 4. 화살표 패턴: -->, ->>
         val arrowRegex = Regex("""--+>""")
         arrowRegex.findAll(line).forEach { match ->
             spannable.setSpan(
@@ -102,7 +142,7 @@ class LogAdapter(private var logLines: List<String>) :
             )
         }
 
-        // 4. 키워드 패턴: 대문자로 시작하는 단어 뒤에 콜론
+        // 5. 키워드 패턴: 대문자로 시작하는 단어 뒤에 콜론
         val keywordRegex = Regex("""[A-Z_]+\s*:""")
         keywordRegex.findAll(line).forEach { match ->
             spannable.setSpan(

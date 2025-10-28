@@ -18,4 +18,8 @@
     <color name="log_separator">#FF666666</color>
     <color name="log_keyword">#FFFFC107</color>
     <color name="log_arrow">#FF99CC00</color>
+
+    <!-- Search highlighting colors -->
+    <color name="search_highlight">#88FFFF00</color>
+    <color name="search_current">#88FFA500</color>
 </resources>
