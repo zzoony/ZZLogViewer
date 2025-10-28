@@ -95,8 +95,8 @@ class MainActivity : AppCompatActivity() {
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("text/plain", "text/*", "*/*"))
+            type = "text/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("text/plain", "text/*"))
         }
         filePickerLauncher.launch(intent)
     }
@@ -108,19 +108,13 @@ class MainActivity : AppCompatActivity() {
             } ?: emptyList()
 
             // RecyclerView에 로그 표시
-            logAdapter = LogAdapter(logLines).apply {
-                this.showLineNumbers = this@MainActivity.showLineNumbers
-            }
-            binding.recyclerView.adapter = logAdapter
+            logAdapter.updateData(logLines)
 
             // 빈 상태 숨기고 RecyclerView 표시
             showEmptyState(false)
         } catch (e: Exception) {
             e.printStackTrace()
-            logAdapter = LogAdapter(listOf("Error loading log file: ${e.message}")).apply {
-                this.showLineNumbers = this@MainActivity.showLineNumbers
-            }
-            binding.recyclerView.adapter = logAdapter
+            logAdapter.updateData(listOf("Error loading log file: ${e.message}"))
             showEmptyState(false)
         }
     }

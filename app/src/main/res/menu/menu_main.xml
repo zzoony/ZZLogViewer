@@ -2,21 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- File Operations -->
-    <item
-        android:id="@+id/action_browse_file"
-        android:title="@string/browse_file" />
-
-    <!-- Divider -->
-    <item
-        android:id="@+id/menu_divider"
-        android:title="──────────────────"
-        android:enabled="false" />
+    <group android:id="@+id/group_file_operations">
+        <item
+            android:id="@+id/action_browse_file"
+            android:title="@string/browse_file" />
+    </group>
 
     <!-- View Options -->
-    <item
-        android:id="@+id/action_toggle_line_numbers"
-        android:title="@string/show_line_numbers"
-        android:checkable="true"
-        android:checked="true" />
+    <group android:id="@+id/group_view_options">
+        <item
+            android:id="@+id/action_toggle_line_numbers"
+            android:title="@string/show_line_numbers"
+            android:checkable="true"
+            android:checked="true" />
+    </group>
 
 </menu>
