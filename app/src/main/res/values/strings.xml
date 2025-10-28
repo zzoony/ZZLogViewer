@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ZZLogViewer</string>
-    <string name="app_title_with_version">ZZLogViewer v0.0.1</string>
     <string name="app_title_with_version_fmt">%1$s v%2$s</string>
     <string name="show_line_numbers">Show Line Numbers</string>
     <string name="hide_line_numbers">Hide Line Numbers</string>

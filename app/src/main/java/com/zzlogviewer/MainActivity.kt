@@ -26,6 +26,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 타이틀 설정 (동적으로 버전 표시)
+        binding.toolbarTitle.text = getString(
+            R.string.app_title_with_version_fmt,
+            getString(R.string.app_name),
+            BuildConfig.VERSION_NAME
+        )
+
         // 메뉴 버튼 클릭 리스너 설정
         binding.menuButton.setOnClickListener {
             showPopupMenu()

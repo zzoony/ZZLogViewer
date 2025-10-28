@@ -21,13 +21,13 @@
                 android:id="@+id/toolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_title_with_version"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:layout_marginStart="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="ZZLogViewer v0.0.1" />
 
             <ImageButton
                 android:id="@+id/menuButton"
