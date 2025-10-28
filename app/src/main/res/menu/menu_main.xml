@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- File Operations -->
+    <item
+        android:id="@+id/action_browse_file"
+        android:title="@string/browse_file" />
+
+    <!-- Divider -->
+    <item
+        android:id="@+id/menu_divider"
+        android:title="──────────────────"
+        android:enabled="false" />
+
+    <!-- View Options -->
     <item
         android:id="@+id/action_toggle_line_numbers"
         android:title="@string/show_line_numbers"

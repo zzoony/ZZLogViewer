@@ -39,6 +39,12 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
+    }
+
+    // 실제 디바이스(무선 연결 포함)에만 설치, 에뮬레이터 제외
+    adbOptions {
+        installOptions("-d") // -d: 실제 디바이스만 대상
     }
 }
 
