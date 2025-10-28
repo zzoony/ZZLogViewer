@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -19,15 +21,16 @@
         android:textColor="@color/line_number_text"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:fontFamily="@font/d2coding"
+        app:fontFamily="@font/d2coding"
         android:gravity="end"
-        android:text="1" />
+        tools:text="1" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/divider"
+        android:importantForAccessibility="no"
         android:layout_marginEnd="8dp" />
 
     <TextView
@@ -38,7 +41,7 @@
         android:textColor="@color/log_text"
         android:textSize="18sp"
         android:lineSpacingMultiplier="0.8"
-        android:fontFamily="@font/d2coding"
-        android:text="Log line content" />
+        app:fontFamily="@font/d2coding"
+        tools:text="Log line content" />
 
 </LinearLayout>

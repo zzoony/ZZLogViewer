@@ -19,6 +19,7 @@ android {
 
     buildTypes {
         release {
+            // TODO: Enable minification for production releases
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
