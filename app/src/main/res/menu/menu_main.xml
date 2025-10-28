@@ -15,6 +15,12 @@
             android:title="@string/show_line_numbers"
             android:checkable="true"
             android:checked="true" />
+        <item
+            android:id="@+id/action_text_size_increase"
+            android:title="@string/text_size_increase" />
+        <item
+            android:id="@+id/action_text_size_decrease"
+            android:title="@string/text_size_decrease" />
     </group>
 
 </menu>

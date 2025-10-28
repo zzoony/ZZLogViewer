@@ -8,18 +8,26 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zzlogviewer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
+        private const val PREFS_NAME = "ZZLogViewerPrefs"
         private const val KEY_SHOW_LINE_NUMBERS = "show_line_numbers"
+        private const val KEY_TEXT_SIZE = "text_size"
+        private const val DEFAULT_TEXT_SIZE = 18f
+        private const val MIN_TEXT_SIZE = 10f
+        private const val MAX_TEXT_SIZE = 32f
+        private const val TEXT_SIZE_STEP = 2f
     }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var logAdapter: LogAdapter
     private var showLineNumbers = true
+    private var textSize = DEFAULT_TEXT_SIZE
 
     // 파일 선택 런처
     private val filePickerLauncher = registerForActivityResult(
@@ -33,10 +41,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 다크모드 강제 적용
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
         super.onCreate(savedInstanceState)
 
-        // Restore state
-        showLineNumbers = savedInstanceState?.getBoolean(KEY_SHOW_LINE_NUMBERS, true) ?: true
+        // SharedPreferences에서 설정 로드
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
+        // Restore state (화면 회전 시 savedInstanceState 우선, 없으면 SharedPreferences)
+        showLineNumbers = savedInstanceState?.getBoolean(KEY_SHOW_LINE_NUMBERS)
+            ?: prefs.getBoolean(KEY_SHOW_LINE_NUMBERS, true)
+        textSize = savedInstanceState?.getFloat(KEY_TEXT_SIZE)
+            ?: prefs.getFloat(KEY_TEXT_SIZE, DEFAULT_TEXT_SIZE)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -61,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         // RecyclerView 설정 (초기에는 빈 리스트)
         logAdapter = LogAdapter(emptyList()).apply {
             this.showLineNumbers = this@MainActivity.showLineNumbers
+            this.textSize = this@MainActivity.textSize
         }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -74,6 +92,7 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_SHOW_LINE_NUMBERS, showLineNumbers)
+        outState.putFloat(KEY_TEXT_SIZE, textSize)
     }
 
     private fun showPopupMenu() {
@@ -112,6 +131,13 @@ class MainActivity : AppCompatActivity() {
 
             // 빈 상태 숨기고 RecyclerView 표시
             showEmptyState(false)
+
+            // 마지막 라인으로 스크롤 (레이아웃 완료 후 실행)
+            if (logLines.isNotEmpty()) {
+                binding.recyclerView.post {
+                    binding.recyclerView.scrollToPosition(logLines.size - 1)
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             logAdapter.updateData(listOf("Error loading log file: ${e.message}"))
@@ -132,6 +158,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleMenuItemClick(item: MenuItem): Boolean {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
         return when (item.itemId) {
             R.id.action_browse_file -> {
                 openFilePicker()
@@ -146,6 +174,31 @@ class MainActivity : AppCompatActivity() {
                 // Adapter에 변경 사항 반영
                 logAdapter.showLineNumbers = showLineNumbers
 
+                // SharedPreferences에 저장
+                prefs.edit().putBoolean(KEY_SHOW_LINE_NUMBERS, showLineNumbers).apply()
+
+                true
+            }
+            R.id.action_text_size_increase -> {
+                // 텍스트 크기 증가
+                if (textSize < MAX_TEXT_SIZE) {
+                    textSize += TEXT_SIZE_STEP
+                    logAdapter.textSize = textSize
+
+                    // SharedPreferences에 저장
+                    prefs.edit().putFloat(KEY_TEXT_SIZE, textSize).apply()
+                }
+                true
+            }
+            R.id.action_text_size_decrease -> {
+                // 텍스트 크기 감소
+                if (textSize > MIN_TEXT_SIZE) {
+                    textSize -= TEXT_SIZE_STEP
+                    logAdapter.textSize = textSize
+
+                    // SharedPreferences에 저장
+                    prefs.edit().putFloat(KEY_TEXT_SIZE, textSize).apply()
+                }
                 true
             }
             else -> false

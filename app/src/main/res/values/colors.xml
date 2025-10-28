@@ -4,8 +4,18 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#FF424242</color>
     <color name="primary_dark">#FF303030</color>
-    <color name="accent">#FF03DAC5</color>
+    <color name="accent">#FF1976D2</color>
     <color name="line_number_text">#FF666666</color>
     <color name="log_text">#FF000000</color>
     <color name="divider">#FFE0E0E0</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="surface">#FFFAFAFA</color>
+    <color name="button_background">#FF1976D2</color>
+    <color name="button_text">#FFFFFFFF</color>
+
+    <!-- Log text highlighting colors (light mode) -->
+    <color name="log_timestamp">#FF0288D1</color>
+    <color name="log_separator">#FFAAAAAA</color>
+    <color name="log_keyword">#FFF57C00</color>
+    <color name="log_arrow">#FF689F38</color>
 </resources>
