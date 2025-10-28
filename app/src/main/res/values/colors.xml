@@ -8,4 +8,6 @@
     <color name="line_number_text">#FF666666</color>
     <color name="log_text">#FF000000</color>
     <color name="divider">#FFE0E0E0</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="surface">#FFFAFAFA</color>
 </resources>

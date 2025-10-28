@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -52,7 +53,8 @@
         android:layout_height="wrap_content"
         android:text="@string/no_file_selected"
         android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="?attr/colorOnSurface"
+        android:alpha="0.6"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/browseFileButton"
         app:layout_constraintStart_toStartOf="parent"

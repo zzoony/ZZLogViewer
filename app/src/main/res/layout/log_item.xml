@@ -9,7 +9,7 @@
     android:paddingBottom="2dp"
     android:paddingStart="4dp"
     android:paddingEnd="4dp"
-    android:background="@color/white">
+    android:background="?attr/colorSurface">
 
     <TextView
         android:id="@+id/lineNumberTextView"
