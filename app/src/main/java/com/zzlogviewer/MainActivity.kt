@@ -16,11 +16,17 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val KEY_SHOW_LINE_NUMBERS = "show_line_numbers"
+        private const val KEY_TEXT_SIZE = "text_size"
+        private const val DEFAULT_TEXT_SIZE = 18f
+        private const val MIN_TEXT_SIZE = 10f
+        private const val MAX_TEXT_SIZE = 32f
+        private const val TEXT_SIZE_STEP = 2f
     }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var logAdapter: LogAdapter
     private var showLineNumbers = true
+    private var textSize = DEFAULT_TEXT_SIZE
 
     // 파일 선택 런처
     private val filePickerLauncher = registerForActivityResult(
@@ -41,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // Restore state
         showLineNumbers = savedInstanceState?.getBoolean(KEY_SHOW_LINE_NUMBERS, true) ?: true
+        textSize = savedInstanceState?.getFloat(KEY_TEXT_SIZE, DEFAULT_TEXT_SIZE) ?: DEFAULT_TEXT_SIZE
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -65,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         // RecyclerView 설정 (초기에는 빈 리스트)
         logAdapter = LogAdapter(emptyList()).apply {
             this.showLineNumbers = this@MainActivity.showLineNumbers
+            this.textSize = this@MainActivity.textSize
         }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -78,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_SHOW_LINE_NUMBERS, showLineNumbers)
+        outState.putFloat(KEY_TEXT_SIZE, textSize)
     }
 
     private fun showPopupMenu() {
@@ -150,6 +159,22 @@ class MainActivity : AppCompatActivity() {
                 // Adapter에 변경 사항 반영
                 logAdapter.showLineNumbers = showLineNumbers
 
+                true
+            }
+            R.id.action_text_size_increase -> {
+                // 텍스트 크기 증가
+                if (textSize < MAX_TEXT_SIZE) {
+                    textSize += TEXT_SIZE_STEP
+                    logAdapter.textSize = textSize
+                }
+                true
+            }
+            R.id.action_text_size_decrease -> {
+                // 텍스트 크기 감소
+                if (textSize > MIN_TEXT_SIZE) {
+                    textSize -= TEXT_SIZE_STEP
+                    logAdapter.textSize = textSize
+                }
                 true
             }
             else -> false

@@ -7,4 +7,6 @@
     <string name="menu_description">Menu</string>
     <string name="no_file_selected">No log file selected</string>
     <string name="browse_file">Browse File</string>
+    <string name="text_size_increase">Text Size +</string>
+    <string name="text_size_decrease">Text Size -</string>
 </resources>

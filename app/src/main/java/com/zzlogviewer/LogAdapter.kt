@@ -15,6 +15,12 @@ class LogAdapter(private var logLines: List<String>) :
             notifyDataSetChanged()
         }
 
+    var textSize: Float = 18f
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     fun updateData(newLines: List<String>) {
         logLines = newLines
         notifyDataSetChanged()
@@ -38,6 +44,10 @@ class LogAdapter(private var logLines: List<String>) :
 
         holder.lineNumberTextView.text = lineNumber.toString()
         holder.logTextView.text = logLine
+
+        // 텍스트 크기 적용
+        holder.lineNumberTextView.textSize = textSize
+        holder.logTextView.textSize = textSize
 
         // 라인 번호 표시/숨김
         if (showLineNumbers) {
