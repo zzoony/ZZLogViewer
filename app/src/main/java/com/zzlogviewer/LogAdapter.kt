@@ -1,9 +1,13 @@
 package com.zzlogviewer
 
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class LogAdapter(private var logLines: List<String>) :
@@ -43,7 +47,9 @@ class LogAdapter(private var logLines: List<String>) :
         val logLine = logLines[position]
 
         holder.lineNumberTextView.text = lineNumber.toString()
-        holder.logTextView.text = logLine
+
+        // 색상 하이라이팅 적용
+        holder.logTextView.text = colorizeLogLine(logLine, holder.itemView)
 
         // 텍스트 크기 적용
         holder.lineNumberTextView.textSize = textSize
@@ -57,6 +63,57 @@ class LogAdapter(private var logLines: List<String>) :
             holder.lineNumberTextView.visibility = View.GONE
             holder.divider.visibility = View.GONE
         }
+    }
+
+    private fun colorizeLogLine(line: String, view: View): SpannableString {
+        val spannable = SpannableString(line)
+        val context = view.context
+
+        // 1. 타임스탬프 패턴: [날짜 시간]
+        val timestampRegex = Regex("""\[\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}:\d{2}\]""")
+        timestampRegex.findAll(line).forEach { match ->
+            spannable.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(context, R.color.log_timestamp)),
+                match.range.first,
+                match.range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        // 2. 구분선 패턴: ===...
+        val separatorRegex = Regex("""={3,}""")
+        separatorRegex.findAll(line).forEach { match ->
+            spannable.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(context, R.color.log_separator)),
+                match.range.first,
+                match.range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        // 3. 화살표 패턴: -->, ->>
+        val arrowRegex = Regex("""--+>""")
+        arrowRegex.findAll(line).forEach { match ->
+            spannable.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(context, R.color.log_arrow)),
+                match.range.first,
+                match.range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        // 4. 키워드 패턴: 대문자로 시작하는 단어 뒤에 콜론
+        val keywordRegex = Regex("""[A-Z_]+\s*:""")
+        keywordRegex.findAll(line).forEach { match ->
+            spannable.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(context, R.color.log_keyword)),
+                match.range.first,
+                match.range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        return spannable
     }
 
     override fun getItemCount(): Int = logLines.size

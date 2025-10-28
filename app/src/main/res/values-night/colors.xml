@@ -12,4 +12,10 @@
     <color name="surface">#FF1E1E1E</color>
     <color name="button_background">#FF99CC00</color>
     <color name="button_text">#FF000000</color>
+
+    <!-- Log text highlighting colors -->
+    <color name="log_timestamp">#FF4DD0E1</color>
+    <color name="log_separator">#FF666666</color>
+    <color name="log_keyword">#FFFFC107</color>
+    <color name="log_arrow">#FF99CC00</color>
 </resources>
