@@ -98,12 +98,30 @@ class MainActivity : AppCompatActivity() {
 
         // 검색바 설정
         setupSearchBar()
+
+        // Intent로 전달된 파일 처리 (외부 앱에서 파일 열기)
+        handleIntent(intent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_SHOW_LINE_NUMBERS, showLineNumbers)
         outState.putFloat(KEY_TEXT_SIZE, textSize)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        // 외부 앱에서 파일을 열 때 (ACTION_VIEW)
+        if (intent.action == Intent.ACTION_VIEW) {
+            intent.data?.let { uri ->
+                loadLogFile(uri)
+            }
+        }
     }
 
     private fun showPopupMenu() {
