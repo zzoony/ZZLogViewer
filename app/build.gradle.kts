@@ -3,6 +3,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Load keystore configuration from local.properties
+val keystorePropertiesFile = rootProject.file("local.properties")
+val keystoreProperties = java.util.Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "com.zzlogviewer"
     compileSdk = 34
@@ -19,10 +26,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = rootProject.file("zzlogviewer.keystore")
-            storePassword = "mini1149"
-            keyAlias = "zzlogviewer"
-            keyPassword = "mini1149"
+            storeFile = rootProject.file(keystoreProperties.getProperty("KEYSTORE_FILE") ?: "zzlogviewer.keystore")
+            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD")
+            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
+            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
         }
     }
 
